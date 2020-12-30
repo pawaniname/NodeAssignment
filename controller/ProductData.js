@@ -1,5 +1,3 @@
-
-
 var MallProducts = [
     {
         productName: "Mobile",
@@ -23,18 +21,68 @@ var MallProducts = [
     }
 ]
 
-let getProduct = (req,res) =>  res.json(MallProducts.filter((item) => item.category == req.params.category))
+let postProduct = (req,res) => {
+    if(req.body == null){
+        res.send("Bad Request").status(400)
+    }
+    else{
+        let productAdd = {
+            productName: req.body.productName,
+            productId: req.body.productId,
+            category: req.body.category
+        }
+        MallProducts.push(productAdd)
+        res.json(MallProducts)
+    }
+}
 
-
-let postProductId = (req,res) => res.json(MallProducts.filter((item) =>  item.productId == req.params.productId ))
-
-let postProductCat = (req,res) => {
-    MallProducts.push(req.params)
-    res.send("Product Saved")
+let putProduct = (req,res) => {
+    if(req.body == null){
+        return res.send("Bad request").status(400)
+    }else{
+    MallProducts.forEach((item)=>{
+        if(item.productId == req.params.ProductId){
+            item.productName = req.body.productName,
+            item.category = req.body.category
+        }
+    })
+     res.json(MallProducts)
+}
 }
 
 
-module.exports = {getProduct,postProductId,postProductCat}
+//postProductCat
+let getProductsWithCategory = (req,res)=>{
+    if(req.params.ProductId != null){
+            var result1 = MallProducts.filter((item)=>item.category == req.params.category)
+            res.json(result1)
+        }
+        else{
+            res.send("Bad Request").status(400)
+        }
+}
+
+// delete Product
+let deleteProduct = (req,res)=>{
+    if(req.params.ProductId != null){
+
+   MallProducts.forEach((item,index)=>{
+       if(item.ProductId == req.params.ProductId){
+           MallProducts.splice(index,1)
+       }
+   })
+    res.json(MallProducts)
+}
+else{
+    res.send("Bad Request").status(400)
+}
+}
+
+
+
+
+
+module.exports = {postProduct,putProduct,deleteProduct,getProductsWithCategory}
 
 
 
